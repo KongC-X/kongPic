@@ -1,53 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>添加水印</title>
+	<title>kongPic图片处理器</title>
     <link rel="stylesheet" href="./watermark.css" />
 </head>
 <body>
     <div id="main">
-        <div id="left">
+        <div class="canvas-container">
           <canvas id="canvas"></canvas>
         </div>
-        <div id="right">
-            <input type="file" id="file-input" accept="image/*">
-            <br />
-            <label for="watermark-input">水印内容:</label>
-            <input type="text" id="watermark-input"  placeholder="请输入水印内容">
-            <br />
-            <label for="fontSizeInput">水印文字大小：</label>
-            <input type="number" id="fontSizeInput" min="1" max="100" value="30">
-            <br />
-            <label for="colorPicker">水印颜色：</label>
-            <input type="color" id="colorPicker" value="#000000">
-            <br />
-            <label for="opacitySlider">水印透明度：</label>
-            <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="0.5" oninput="updateOpacity()">
-            <span id="opacityPercentage">50%</span>
-            <br />
-            <label for="positionXInput">Position X:</label>
-            <input type="number" id="positionXInput" value="0" max="800" />
-            <br />
-            <label for="positionYInput">Position Y:</label>
-            <input type="number" id="positionYInput" value="0" max="800" />
-            <br />
-            <label for="rotation-input">旋转角度:</label>
-            <input type="number" id="rotation-input" value="20"  placeholder="请输入旋转角度">
-            <br />
-            <button id="add-watermark">添加水印</button>
-            <br />
-            <button id="tileButton">水印平铺</button>
-            <br />
-            <label for="horizontalSpacing">水平间距：</label>
-            <input type="number" id="horizontalSpacing" min="0" value="150">
-            <label for="verticalSpacing">垂直间距：</label>
-            <input type="number" id="verticalSpacing" min="0" value="100">
-            <br />
-            <button onclick="clearWatermark()">清除水印</button>
-            <br />
-            <button onclick="saveImage()">保存水印图片</button>
+
+        <div class="form-container">
+            <div class="form-group">
+              <input type="file" id="file-input" accept="image/*">
+            </div>
+
+            <div class="form-group">
+              <label for="watermark-input">水印内容:</label>
+              <input type="text" id="watermark-input"  placeholder="请输入水印内容">
+            </div>
+
+            <div class="form-group">
+              <label for="fontSizeInput">水印文字大小：</label>
+              <input type="number" id="fontSizeInput" min="1" max="100" value="30">
+            </div>
+
+            <div class="form-group">
+              <label for="colorPicker">水印颜色：</label>
+              <input type="color" id="colorPicker" value="#C3C3C3">
+            </div>
+
+            <div class="form-group">
+              <label for="opacitySlider">水印透明度：</label>
+              <span id="opacityPercentage">50%</span>
+              <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="0.5" oninput="updateOpacity()">
+            </div>
+
+            <div class="form-group">
+              <label for="positionXInput">Position X:</label>
+              <input type="number" id="positionXInput" value="0" max="800" />
+            </div>
+
+            <div class="form-group">
+              <label for="positionYInput">Position Y:</label>
+              <input type="number" id="positionYInput" value="0" max="800" />
+            </div>
+
+            <div class="form-group">
+              <label for="rotation-input">旋转角度:</label>
+              <input type="number" id="rotation-input" value="20"  placeholder="请输入旋转角度">
+            </div>
+
+            <div class="form-group">
+              <label for="horizontalSpacing">水平间距：</label>
+              <input type="number" id="horizontalSpacing" min="0" value="150">
+            </div>
+
+            <div class="form-group">
+              <label for="verticalSpacing">垂直间距：</label>
+              <input type="number" id="verticalSpacing" min="0" value="100">
+            </div>
+
+            <div class="form-group">
+              <button id="add-watermark">添加水印</button>
+            </div>
+            <div class="form-group">
+              <button id="tileButton">水印平铺</button>
+            </div>
+            <div class="form-group">
+              <button onclick="clearWatermark()">清除水印</button>
+            </div>
+            <div class="form-group">
+              <button onclick="saveImage()">保存水印图片</button>
+            </div>
         </div>
       </div>
+      
 
     <script src="./watermark.js"></script>
 </body>

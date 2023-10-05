@@ -3,48 +3,119 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background: linear-gradient(135deg, #a7cee0 50%, #d0dea7);
   }
-  
+
 #main {
     display: flex;
     flex-direction: row;
-    /* justify-content: center; */
+    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    height: 100%;
-}
-  
-#left {
-    width: 800px;
     height: 600px;
+    width: 1200px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5.5px);
+    -webkit-backdrop-filter: blur(5.5px);
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+    -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+    border-radius: 18px;
+    -webkit-border-radius: 18px;
+    color: rgba(255, 255, 255, 0.6);
 }
   
-#right {
-    width: 400px;
+.canvas-container {
+    position: relative;
+    width: 70%;
     height: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
 }
   
 #canvas {
-    max-width: 100%;
-    max-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+  
+.form-container {
+    padding: 0 50px 0 20px;
+    height: 500px;
+    overflow: auto;
+    color: black;
+}
+  
+.form-group {
+    margin-bottom: 10px;
+    margin-right: 20px;
 }
 
-input {
-    margin: 10px 0;
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="range"] {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 8px;
+  margin-top: 2px;
+  border-bottom: solid 2px #898787;
+  transition: border-bottom-color 0.2s ease-in-out;
+  background-color: transparent;
 }
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group input[type="range"]:focus {
+  outline: none;
+  border-bottom-color: #007bff;
+}
+
 
 button {
-    margin: 10px 40px;
+    --color: #560bad;
+    font-family: inherit;
+    display: inline-block;
+    width: 100%;
+    height: 2.6em;
+    line-height: 2.5em;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--color);
+    transition: color .5s;
+    z-index: 1;
+    font-size: 17px;
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--color);
 }
-
-#horizontalSpacing {
-    margin-right: 100px;
+   
+button:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background: var(--color);
+    height: 150px;
+    width: 130%;
+    border-radius: 50%;
 }
-
-label {
-    margin: 0 10px 0 40px;
+   
+button:hover {
+    color: #fff;
+    cursor: pointer;
+}
+   
+button:before {
+    top: 100%;
+    left: 100%;
+    transition: all .7s;
+}
+   
+button:hover:before {
+    top: -30px;
+    left: -30px;
+}
+   
+button:active:before {
+    background: #3a0ca3;
+    transition: background 0s;
 }

@@ -18,6 +18,7 @@ fileInput.addEventListener('change', () => {
     if (!file) {
         return;
     }
+    // 通过 FileReader 来获取图片的 base64
     const reader = new FileReader();
     reader.onload = () => {
         const img = new Image();
@@ -39,7 +40,7 @@ fileInput.addEventListener('change', () => {
         };
         img.src = reader.result;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
 });
 
 // 添加水印
@@ -210,6 +211,7 @@ function hexToRgb(hex) {
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
 }
 
+// 水印百分比显示
 function updateOpacity() {
     const opacity = parseFloat(document.getElementById('opacitySlider').value);
     const opacityPercentage = document.getElementById('opacityPercentage');
