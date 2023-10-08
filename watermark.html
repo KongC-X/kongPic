@@ -7,14 +7,17 @@
 <body>
     <div id="main">
         <div class="canvas-container">
-          <canvas id="canvas"></canvas>
+          <div id="dropzone">
+            <label class="drop-text" for="uploadBtn">点击文字或拖拽上传图片</label>
+            <input type="file" id="uploadBtn"  accept="image/*"  multiple>
+          </div>
+          <canvas id="canvas" style="visibility: hidden;"></canvas>
         </div>
 
         <div class="form-container">
-            <div class="form-group">
+            <!-- <div class="form-group">
               <input type="file" id="file-input" accept="image/*">
-            </div>
-
+            </div> -->
             <div class="form-group">
               <label for="watermark-input">水印内容:</label>
               <input type="text" id="watermark-input"  placeholder="请输入水印内容">
