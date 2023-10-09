@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>kongPic图片处理器</title>
+    <link rel="stylesheet" href="./filter.css" />
+</head>
+<body>
+    <div id="main">
+        <div class="canvas-container">
+          <div id="dropzone">
+            <label class="drop-text" for="uploadBtn">点击文字或拖拽上传图片</label>
+            <input type="file" id="uploadBtn"  accept="image/*"  multiple>
+          </div>
+          <canvas id="canvas" style="visibility: hidden;"></canvas>
+        </div>
+
+        <div class="form-container">
+            <div class="form-group">
+              <label for="opacitySlider">亮度：</label>
+              <input type="range" id="brightness-slider" min="0" max="100" value="50" oninput="updateOpacity()">
+              <span id="opacityPercentage">50</span>
+            </div>
+            <div class="form-group">
+              <button onclick="clearWatermark()">清除水印</button>
+            </div>
+            <div class="form-group">
+              <button onclick="saveImage()">保存水印图片</button>
+            </div>
+        </div>
+      </div>
+      
+    <script src="./filter.js"></script>
+</body>
+</html>
