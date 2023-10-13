@@ -15,11 +15,23 @@
         </div>
 
         <div class="form-container">
+            <div class="form-title">色彩</div>
             <div class="form-group">
-              <label for="opacitySlider">亮度：</label>
-              <input type="range" id="brightness-slider" min="0" max="100" value="50" oninput="updateOpacity()">
-              <span id="opacityPercentage">50</span>
+              <label for="brightnessSlider">亮度：</label>
+              <input type="range"  min="-50" max="50" value="0" id="brightness-slider" oninput="updateBrightness()"/>
+              <span id="brightnessPercentage">0</span>
             </div>
+            <div class="form-group">
+                <label for="saturationSlider">饱和度：</label>
+                <input type="range" min="-100" max="100" value="0" id="saturation-slider" oninput="updateSaturation()"/>
+                <span id="saturationPercentage">0</span>
+            </div>
+            <div class="form-group">
+                <label for="contrastSlider">对比度：</label>
+                <input type="range" min="-100" max="100" value="0" id="contrast-slider" oninput="updateContrast()">
+                <span id="contrastPercentage">0</span>
+            </div>
+            <!-- <div class="form-title">滤镜</div> -->
             <div class="form-group">
               <button onclick="clearWatermark()">清除水印</button>
             </div>

@@ -7,6 +7,7 @@ const maxHeight = 800;
 var dropFileList; // 拖拽文件列表
 
 let originalData; // 原始图像数据
+let updateTimeout; // 用于防抖的计时器 ID
 
 var dropzone = document.getElementById("dropzone");
 
@@ -76,43 +77,129 @@ function handleFiles(files) {
 }
 
 // 监听滑动条的 input 事件
-const slider = document.getElementById("brightness-slider");
-slider.addEventListener("input", function () {
-  const brightness = parseInt(this.value) * 0.02; // 增加一个缩放系数
+const brightnessSlider = document.getElementById("brightness-slider");
+const saturationSlider = document.getElementById("saturation-slider");
+const contrastSlider = document.getElementById("contrast-slider");
+brightnessSlider.addEventListener("input", updateImage);
+saturationSlider.addEventListener("input", updateImage);
+contrastSlider.addEventListener("input", updateImage);
+
+// 更新图片色彩数据
+function updateImage() {
+  const brightness = parseInt(brightnessSlider.value); // 将亮度滑动条的值转换为整数
+  const saturation = parseInt(saturationSlider.value); // 将饱和度滑动条的值转换为整数
+  const contrast = parseInt(contrastSlider.value); // 将对比度滑动条的值转换为整数
 
   // 获取图片数据
   const imageData = ctx.createImageData(canvas.width, canvas.height);
   const data = imageData.data;
 
-  // 调整亮度（原以为是像素值越界，检查后发现是因为累积效应）
-  // for (let i = 0; i < data.length; i += 4) {
-  //   data[i] += brightness;
-  //   data[i + 1] += brightness;
-  //   data[i + 2] += brightness;
-  // }
-
-  // 调整亮度
+  // 调整亮度和饱和度
   for (let i = 0; i < originalData.length; i += 4) {
-    // 将 RGB 值转换为浮点数（范围为 0-1）
-    const r = originalData[i] / 255;
-    const g = originalData[i + 1] / 255;
-    const b = originalData[i + 2] / 255;
+    const r = originalData[i];
+    const g = originalData[i + 1];
+    const b = originalData[i + 2];
 
-    // 调整亮度
-    const adjustedR = clamp(r * brightness, 0, 1);
-    const adjustedG = clamp(g * brightness, 0, 1);
-    const adjustedB = clamp(b * brightness, 0, 1);
+    // 将 RGB 值转换为 HSL 值
+    const hsl = rgbToHsl(r, g, b);
 
-    // 将调整后的 RGB 值转换为整数（范围为 0-255）
-    data[i] = Math.round(adjustedR * 255);
-    data[i + 1] = Math.round(adjustedG * 255);
-    data[i + 2] = Math.round(adjustedB * 255);
-    data[i + 3] = originalData[i + 3]; // 保持透明度不变
+    // 调整亮度和饱和度
+    hsl[2] += brightness / 100;
+    hsl[1] += saturation / 100;
+
+    // 将 HSL 值转换回 RGB 值
+    const newRgb = hslToRgb(hsl[0], hsl[1], hsl[2]);
+
+    // 将新的 RGB 值应用于像素
+    data[i] = newRgb[0];
+    data[i + 1] = newRgb[1];
+    data[i + 2] = newRgb[2];
+    data[i + 3] = originalData[i + 3];
   }
 
-  // 绘制处理后的图片数据到 Canvas 上
+  // 调整对比度
+  if (contrast !== 0) {
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = factor * (data[i] - 128) + 128;
+      data[i + 1] = factor * (data[i + 1] - 128) + 128;
+      data[i + 2] = factor * (data[i + 2] - 128) + 128;
+    }
+  }
+
+  // 更新图像
   ctx.putImageData(imageData, 0, 0);
-});
+}
+
+// rgb转hsl
+function rgbToHsl(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // 灰色
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return [h, s, l];
+}
+
+// hsl转rgb
+function hslToRgb(h, s, l) {
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l; // 灰色
+  } else {
+    const hue2rgb = function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+// 防抖函数
+function debounce(func, delay) {
+  let timeoutId;
+  return function() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, arguments);
+    }, delay);
+  };
+}
 
 // 清除水印
 function clearWatermark() {
@@ -124,7 +211,7 @@ function clearWatermark() {
 
   // 修改图片亮度为初始值
   const opacityPercentage = document.getElementById("opacityPercentage");
-  opacityPercentage.textContent = '50';
+  opacityPercentage.textContent = "50";
   const slider = document.getElementById("brightness-slider");
   slider.value = 50;
 
@@ -175,16 +262,29 @@ function saveImage() {
   document.body.removeChild(link);
 }
 
-// 水印百分比显示
-function updateOpacity() {
-  const opacity = parseFloat(
+// 亮度百分比显示
+function updateBrightness() {
+  const brightness = parseFloat(
     document.getElementById("brightness-slider").value
   );
-  const opacityPercentage = document.getElementById("opacityPercentage");
-  opacityPercentage.textContent = `${Math.round(opacity)}`;
+  const brightnessPercentage = document.getElementById("brightnessPercentage");
+  brightnessPercentage.textContent = `${Math.round(brightness)}`;
 }
 
-// 辅助函数：将值限制在指定范围内
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+// 饱和度百分比显示
+function updateSaturation() {
+  const saturation = parseFloat(
+    document.getElementById("saturation-slider").value
+  );
+  const saturationPercentage = document.getElementById("saturationPercentage");
+  saturationPercentage.textContent = `${Math.round(saturation)}`;
+}
+
+// 对比度百分比显示
+function updateContrast() {
+  const contrast = parseFloat(
+    document.getElementById("contrast-slider").value
+  );
+  const contrastPercentage = document.getElementById("contrastPercentage");
+  contrastPercentage.textContent = `${Math.round(contrast)}`;
 }

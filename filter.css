@@ -46,18 +46,35 @@ body {
     overflow: auto;
     color: black;
 }
+
+.form-title {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
   
 .form-group {
-    margin-bottom: 10px;
-    /* margin-right: 20px; */
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#opacityPercentage {
+#brightnessPercentage {
     width: 30px;
-    margin-left: 5px;
+    margin-left: 10px;
+}
+
+#saturationPercentage {
+    width: 30px;
+    margin-left: 10px;
+}
+
+#contrastPercentage {
+    width: 30px;
+    margin-left: 10px;
 }
 
 
