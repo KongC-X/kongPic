@@ -31,12 +31,23 @@
                 <input type="range" min="-100" max="100" value="0" id="contrast-slider" oninput="updateContrast()">
                 <span id="contrastPercentage">0</span>
             </div>
-            <!-- <div class="form-title">滤镜</div> -->
+            <div class="form-title">滤镜</div>
+            <div class="grid-container">
+                <div class="grid-item">模糊/渐变</div>
+                <div class="grid-item">自然</div>
+                <div class="grid-item">暖光</div>
+                <div class="grid-item">冷光</div>
+                <div class="grid-item">黑白</div>
+                <div class="grid-item">反色</div>
+                <div class="grid-item">复古</div>
+                <div class="grid-item">灰度</div>
+                <div class="grid-item">马赛克</div>
+              </div>
             <div class="form-group">
-              <button onclick="clearWatermark()">清除水印</button>
+              <button onclick="clearFilter()">原图色彩</button>
             </div>
             <div class="form-group">
-              <button onclick="saveImage()">保存水印图片</button>
+              <button onclick="saveImage()">保存图片</button>
             </div>
         </div>
       </div>

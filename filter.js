@@ -202,18 +202,26 @@ function debounce(func, delay) {
 }
 
 // 清除水印
-function clearWatermark() {
+function clearFilter() {
   const canvasWidth = ctx.canvas.width;
   const canvasHeight = ctx.canvas.height;
 
   // 清除原始画布
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  // 修改图片亮度为初始值
-  const opacityPercentage = document.getElementById("opacityPercentage");
-  opacityPercentage.textContent = "50";
-  const slider = document.getElementById("brightness-slider");
-  slider.value = 50;
+  // 修改图片亮度、饱和度、对比度为初始值
+  const brightnessPercentage = document.getElementById("brightnessPercentage");
+  const saturationPercentage = document.getElementById("saturationPercentage");
+  const contrastPercentage = document.getElementById("contrastPercentage");
+  const brightnessSlider = document.getElementById("brightness-slider");
+  const saturationSlider = document.getElementById("saturation-slider");
+  const contrastSlider = document.getElementById("contrast-slider");
+  brightnessPercentage.textContent = "0";
+  saturationPercentage.textContent = "0";
+  contrastPercentage.textContent = "0";
+  brightnessSlider.value = 0;
+  saturationSlider.value = 0;
+  contrastSlider.value = 0;
 
   // 在原始画布上重新绘制之前的图像
   const file = dropFileList[0];

@@ -197,3 +197,18 @@ button:active:before {
 #uploadBtn {
     visibility: hidden;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 80px); /* 每行三个列，每列平均宽度 */
+    grid-gap: 10px; /* 格子之间的间隔 */
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+
+  .grid-item {
+    width: 60px;
+    height: 60px;
+    background-color: #ccc;
+    cursor: pointer;
+  }
