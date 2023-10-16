@@ -74,6 +74,10 @@ function handleFiles(files) {
     };
     reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
   }
+
+  // 上传完图片后将提示文字隐藏，防止透明滤镜时显示
+  const dropText = document.querySelector(".drop-text");
+  dropText.style.display = "none";
 }
 
 // 监听滑动条的 input 事件
@@ -140,7 +144,9 @@ function rgbToHsl(r, g, b) {
 
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
+  let h,
+    s,
+    l = (max + min) / 2;
 
   if (max === min) {
     h = s = 0; // 灰色
@@ -193,7 +199,7 @@ function hslToRgb(h, s, l) {
 // 防抖函数
 function debounce(func, delay) {
   let timeoutId;
-  return function() {
+  return function () {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       func.apply(this, arguments);
@@ -290,9 +296,298 @@ function updateSaturation() {
 
 // 对比度百分比显示
 function updateContrast() {
-  const contrast = parseFloat(
-    document.getElementById("contrast-slider").value
-  );
+  const contrast = parseFloat(document.getElementById("contrast-slider").value);
   const contrastPercentage = document.getElementById("contrastPercentage");
   contrastPercentage.textContent = `${Math.round(contrast)}`;
 }
+
+// 在点击“黑白”格子时应用黑白滤镜
+const blackWhiteGridItem = document.getElementById("black-white-filter");
+blackWhiteGridItem.addEventListener("click", function () {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const gray = (data[i] + data[i + 1] + data[i + 2]) / 3; // 计算灰度值
+    data[i] = gray; // 设置红色通道为灰度值
+    data[i + 1] = gray; // 设置绿色通道为灰度值
+    data[i + 2] = gray; // 设置蓝色通道为灰度值
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“暖光”格子时应用暖光滤镜
+const warmLightGridItem = document.querySelector("#warm-light-filter");
+warmLightGridItem.addEventListener("click", function () {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用暖光滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    const red = data[i];
+    const green = data[i + 1];
+    const blue = data[i + 2];
+
+    // 调整颜色值
+    const adjustedRed = red + 40;
+    const adjustedGreen = green + 10;
+    const adjustedBlue = blue - 10;
+
+    // 将调整后的颜色值写回图像数据
+    data[i] = adjustedRed;
+    data[i + 1] = adjustedGreen;
+    data[i + 2] = adjustedBlue;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“冷调”格子时应用冷光滤镜
+const coolLightGridItem = document.querySelector("#cool-light-filter");
+coolLightGridItem.addEventListener("click", function () {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用冷光滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    const red = data[i];
+    const green = data[i + 1];
+    const blue = data[i + 2];
+
+    // 调整颜色值
+    const adjustedRed = red - 10;
+    const adjustedGreen = green + 10;
+    const adjustedBlue = blue + 40;
+
+    // 将调整后的颜色值写回图像数据
+    data[i] = adjustedRed;
+    data[i + 1] = adjustedGreen;
+    data[i + 2] = adjustedBlue;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“反色”格子时应用反色滤镜
+const invertGridItem = document.querySelector("#invert-filter");
+invertGridItem.addEventListener("click", function () {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用反色滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    const red = data[i];
+    const green = data[i + 1];
+    const blue = data[i + 2];
+
+    // 计算反色值
+    const invertedRed = 255 - red;
+    const invertedGreen = 255 - green;
+    const invertedBlue = 255 - blue;
+
+    // 将反色值写回图像数据
+    data[i] = invertedRed;
+    data[i + 1] = invertedGreen;
+    data[i + 2] = invertedBlue;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“复古”格子时应用复古滤镜
+const vintageGridItem = document.querySelector("#vintage-filter");
+vintageGridItem.addEventListener("click", function () {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用复古滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    const red = data[i];
+    const green = data[i + 1];
+    const blue = data[i + 2];
+
+    // 调整颜色值
+    const adjustedRed = 0.393 * red + 0.769 * green + 0.189 * blue;
+    const adjustedGreen = 0.349 * red + 0.686 * green + 0.168 * blue;
+    const adjustedBlue = 0.272 * red + 0.534 * green + 0.131 * blue;
+
+    // 将调整后的颜色值写回图像数据
+    data[i] = adjustedRed;
+    data[i + 1] = adjustedGreen;
+    data[i + 2] = adjustedBlue;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“自然”格子时应用自然滤镜
+const naturalGridItem = document.querySelector("#natural-filter");
+naturalGridItem.addEventListener("click", function () {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用自然滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    const red = data[i];
+    const green = data[i + 1];
+    const blue = data[i + 2];
+
+    // 调整颜色值
+    const adjustedRed = 0.8 * red + 0.2 * green + 0.1 * blue;
+    const adjustedGreen = 0.2 * red + 0.9 * green + 0.1 * blue;
+    const adjustedBlue = 0.1 * red + 0.1 * green + 0.9 * blue;
+
+    // 将调整后的颜色值写回图像数据
+    data[i] = adjustedRed;
+    data[i + 1] = adjustedGreen;
+    data[i + 2] = adjustedBlue;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“透明”格子时应用透明滤镜
+const transparentGridItem = document.querySelector("#transparent-filter");
+transparentGridItem.addEventListener("click", function () {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用透明滤镜
+  for (let i = 0; i < data.length; i += 4) {
+    // 将 alpha 值设置为 128，即半透明
+    data[i + 3] = 128;
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“模糊”格子时应用模糊滤镜，有点慢需要优化
+const blurGridItem = document.querySelector('#blur-filter');
+blurGridItem.addEventListener('click', function() {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+
+  // 应用模糊滤镜
+  const blurRadius = 5; // 模糊半径
+
+  for (let y = blurRadius; y < canvas.height - blurRadius; y++) {
+    for (let x = blurRadius; x < canvas.width - blurRadius; x++) {
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let alpha = 0;
+
+      let pixelCount = 0;
+
+      // 计算模糊区域内的颜色平均值
+      for (let j = -blurRadius; j <= blurRadius; j++) {
+        for (let i = -blurRadius; i <= blurRadius; i++) {
+          const offsetX = x + i;
+          const offsetY = y + j;
+
+          const index = (offsetY * canvas.width + offsetX) * 4;
+          red += data[index];
+          green += data[index + 1];
+          blue += data[index + 2];
+          alpha += data[index + 3];
+          pixelCount++;
+        }
+      }
+
+      // 计算颜色平均值
+      red /= pixelCount;
+      green /= pixelCount;
+      blue /= pixelCount;
+      alpha /= pixelCount;
+
+      // 将颜色平均值应用到像素上
+      const currentIndex = (y * canvas.width + x) * 4;
+      data[currentIndex] = red;
+      data[currentIndex + 1] = green;
+      data[currentIndex + 2] = blue;
+      data[currentIndex + 3] = alpha;
+    }
+  }
+
+  // 将处理后的图像数据绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});
+
+// 在点击“马赛克”格子时应用马赛克滤镜
+const mosaicGridItem = document.querySelector('#mosaic-filter');
+mosaicGridItem.addEventListener('click', function() {
+  // 获取图片数据
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  // 创建离屏 Canvas
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = canvas.width;
+  offscreenCanvas.height = canvas.height;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+
+  // 将图片数据绘制到离屏 Canvas 上
+  offscreenCtx.putImageData(imageData, 0, 0);
+
+  // 应用马赛克滤镜
+  const blockSize = 10; // 马赛克块大小
+
+  for (let y = 0; y < canvas.height; y += blockSize) {
+    for (let x = 0; x < canvas.width; x += blockSize) {
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let alpha = 0;
+
+      for (let j = 0; j < blockSize; j++) {
+        for (let i = 0; i < blockSize; i++) {
+          const offsetX = x + i;
+          const offsetY = y + j;
+
+          if (offsetX < canvas.width && offsetY < canvas.height) {
+            const index = (offsetY * canvas.width + offsetX) * 4;
+            red += imageData.data[index];
+            green += imageData.data[index + 1];
+            blue += imageData.data[index + 2];
+            alpha += imageData.data[index + 3];
+          }
+        }
+      }
+
+      const totalCount = blockSize * blockSize;
+      red /= totalCount;
+      green /= totalCount;
+      blue /= totalCount;
+      alpha /= totalCount;
+
+      for (let j = 0; j < blockSize; j++) {
+        for (let i = 0; i < blockSize; i++) {
+          const offsetX = x + i;
+          const offsetY = y + j;
+
+          if (offsetX < canvas.width && offsetY < canvas.height) {
+            const index = (offsetY * canvas.width + offsetX) * 4;
+            imageData.data[index] = red;
+            imageData.data[index + 1] = green;
+            imageData.data[index + 2] = blue;
+            imageData.data[index + 3] = alpha;
+          }
+        }
+      }
+    }
+  }
+
+  // 将结果绘制到 Canvas 上
+  ctx.putImageData(imageData, 0, 0);
+});

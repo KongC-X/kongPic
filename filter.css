@@ -4,7 +4,7 @@ body {
     align-items: center;
     height: 100vh;
     background: linear-gradient(135deg, #a7cee0 50%, #d0dea7);
-  }
+}
 
 #main {
     display: flex;
@@ -23,13 +23,13 @@ body {
     -webkit-border-radius: 18px;
     color: rgba(255, 255, 255, 0.6);
 }
-  
+
 .canvas-container {
     position: relative;
     width: 70%;
     height: 100%;
 }
-  
+
 #canvas {
     position: absolute;
     top: 0;
@@ -37,7 +37,7 @@ body {
     width: 100%;
     height: 100%;
 }
-  
+
 .form-container {
     padding: 20px 20px 0 20px;
     position: relative;
@@ -54,7 +54,7 @@ body {
     font-size: 20px;
     font-weight: bold;
 }
-  
+
 .form-group {
     margin-bottom: 20px;
     display: flex;
@@ -77,7 +77,6 @@ body {
     margin-left: 10px;
 }
 
-
 /* 美化滑动条 */
 input[type="range"] {
     -webkit-appearance: none;
@@ -88,9 +87,9 @@ input[type="range"] {
     background-color: #ddd;
     outline: none;
     margin: 10px 0;
-  }
+}
 
-  input[type="range"]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 12px;
     height: 12px;
@@ -98,15 +97,38 @@ input[type="range"] {
     background-color: white;
     cursor: pointer;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  }
+}
 
-  /* 添加渐变色效果 */
-  input[type="range"]::-webkit-slider-runnable-track {
-    background: linear-gradient(90deg, rgba(66,65,68,1) 0%, rgba(144,140,140,1) 30%, rgba(255,255,255,1) 100%);
+/* 添加渐变色效果 */
+#brightness input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg,
+            rgba(66, 65, 68, 1) 0%,
+            rgba(144, 140, 140, 1) 30%,
+            rgba(255, 255, 255, 1) 100%);
     height: 10px;
     border-radius: 5px;
-  }
+    cursor: pointer;
+}
 
+/* 添加渐变色效果 */
+#saturation input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg,
+            rgba(147, 134, 131, 1) 0%,
+            rgba(229, 246, 34, 1) 50%,
+            rgba(241, 6, 6, 1) 100%);
+    height: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+/* 添加渐变色效果 */
+#contrast input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg, rgba(44,57,139,1) 0%, rgba(148,196,232,1) 100%);
+    height: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
 button {
     --color: #560bad;
@@ -118,14 +140,14 @@ button {
     position: relative;
     overflow: hidden;
     border: 2px solid var(--color);
-    transition: color .5s;
+    transition: color 0.5s;
     z-index: 1;
     font-size: 17px;
     border-radius: 6px;
     font-weight: 500;
     color: var(--color);
 }
-   
+
 button:before {
     content: "";
     position: absolute;
@@ -135,23 +157,23 @@ button:before {
     width: 130%;
     border-radius: 50%;
 }
-   
+
 button:hover {
     color: #fff;
     cursor: pointer;
 }
-   
+
 button:before {
     top: 100%;
     left: 100%;
-    transition: all .7s;
+    transition: all 0.7s;
 }
-   
+
 button:hover:before {
     top: -30px;
     left: -30px;
 }
-   
+
 button:active:before {
     background: #3a0ca3;
     transition: background 0s;
@@ -177,7 +199,9 @@ button:active:before {
     font-size: 1.6rem;
     cursor: pointer;
     width: 0;
-    background-image: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    background-image: radial-gradient(circle,
+            rgba(238, 174, 202, 1) 0%,
+            rgba(148, 187, 233, 1) 100%);
     color: #ffffff;
     background-clip: text;
     -webkit-background-clip: text;
@@ -186,7 +210,7 @@ button:active:before {
 
 @keyframes typing {
     from {
-        width: 0
+        width: 0;
     }
 
     to {
@@ -200,15 +224,30 @@ button:active:before {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 80px); /* 每行三个列，每列平均宽度 */
-    grid-gap: 10px; /* 格子之间的间隔 */
+    grid-template-columns: repeat(3, 80px);
+    /* 每行三个列，每列平均宽度 */
+    grid-gap: 10px;
+    /* 格子之间的间隔 */
     margin-left: 20px;
     margin-bottom: 20px;
-  }
+}
 
-  .grid-item {
+.grid-item {
     width: 60px;
     height: 60px;
-    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
     cursor: pointer;
-  }
+    background-image: url('./bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(10%);
+}
+
+.grid-item:hover {
+    opacity: 0.7;
+    color: black;
+    filter: brightness(110%);
+}

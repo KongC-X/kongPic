@@ -16,33 +16,33 @@
 
         <div class="form-container">
             <div class="form-title">色彩</div>
-            <div class="form-group">
+            <div class="form-group" id="brightness">
               <label for="brightnessSlider">亮度：</label>
               <input type="range"  min="-50" max="50" value="0" id="brightness-slider" oninput="updateBrightness()"/>
               <span id="brightnessPercentage">0</span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="saturation">
                 <label for="saturationSlider">饱和度：</label>
                 <input type="range" min="-100" max="100" value="0" id="saturation-slider" oninput="updateSaturation()"/>
                 <span id="saturationPercentage">0</span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="contrast">
                 <label for="contrastSlider">对比度：</label>
                 <input type="range" min="-100" max="100" value="0" id="contrast-slider" oninput="updateContrast()">
                 <span id="contrastPercentage">0</span>
             </div>
             <div class="form-title">滤镜</div>
             <div class="grid-container">
-                <div class="grid-item">模糊/渐变</div>
-                <div class="grid-item">自然</div>
-                <div class="grid-item">暖光</div>
-                <div class="grid-item">冷光</div>
-                <div class="grid-item">黑白</div>
-                <div class="grid-item">反色</div>
-                <div class="grid-item">复古</div>
-                <div class="grid-item">灰度</div>
-                <div class="grid-item">马赛克</div>
-              </div>
+                <div class="grid-item" id="natural-filter">自然</div>
+                <div class="grid-item" id="warm-light-filter">暖光</div>
+                <div class="grid-item" id="cool-light-filter">冷调</div>
+                <div class="grid-item" id="vintage-filter">复古</div>
+                <div class="grid-item" id="black-white-filter">黑白</div>
+                <div class="grid-item" id="invert-filter">反色</div>
+                <div class="grid-item" id="transparent-filter">透明</div>
+                <div class="grid-item" id="blur-filter">模糊</div>
+                <div class="grid-item" id="mosaic-filter">马赛克</div>
+            </div>
             <div class="form-group">
               <button onclick="clearFilter()">原图色彩</button>
             </div>
