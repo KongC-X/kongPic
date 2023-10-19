@@ -75,9 +75,11 @@ function handleFiles(files) {
     reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
   }
 
-  // 上传完图片后将提示文字隐藏，防止透明滤镜时显示
-  const dropText = document.querySelector(".drop-text");
-  dropText.style.display = "none";
+  if (file.type.startsWith("image/")) {
+    // 上传完图片后将提示文字隐藏，防止透明滤镜时显示
+    const dropText = document.querySelector(".drop-text");
+    dropText.style.display = "none";
+  }
 }
 
 // 监听滑动条的 input 事件

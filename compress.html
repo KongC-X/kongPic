@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>kongPic图片处理器</title>
+    <link rel="stylesheet" href="./compress.css" />
+</head>
+<body>
+    <div id="main">
+        <div class="canvas-container">
+          <div id="dropzone">
+            <label class="drop-text" for="uploadBtn">点击文字或拖拽上传图片</label>
+            <input type="file" id="uploadBtn"  accept="image/*"  multiple>
+          </div>
+          <canvas id="canvas" style="visibility: hidden;"></canvas>
+        </div>
+
+        <div class="form-container">
+            <div class="form-title">图片压缩</div>
+            <div class="form-group">
+              <label for="compressCoefficient">压缩系数：</label>
+              <input type="range"  min="0" max="100" value="80" step="10" id="compress-slider" oninput="updateCompress()"/>
+              <span id="compressPercentage">0.8</span>
+            </div>
+            <div class="form-title">图片格式转换</div>
+            <div class="selector">
+              <input type="radio" id="jpeg" name="format" value="jpeg" checked>
+              <label for="jpeg">JPEG</label>
+            
+              <input type="radio" id="png" name="format" value="png">
+              <label for="png">PNG</label>
+            
+              <input type="radio" id="webp" name="format" value="webp">
+              <label for="webp">WebP</label>
+            
+              <input type="radio" id="gif" name="format" value="gif">
+              <label for="gif">GIF</label>
+            </div>
+            
+            <div class="form-group">
+              <button onclick="saveImage()">生成图片</button>
+            </div>
+        </div>
+      </div>
+      
+    <script src="./compress.js"></script>
+</body>
+</html>
