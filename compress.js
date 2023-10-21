@@ -1,13 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-const maxWidth = 800;
-const maxHeight = 800;
-
 var fileInfo; // 图片信息
-
-let originalData; // 原始图像数据
-let updateTimeout; // 用于防抖的计时器 ID
 
 var dropzone = document.getElementById("dropzone");
 
@@ -59,21 +53,13 @@ function handleFiles(files) {
       img.onload = () => {
         let width = img.width;
         let height = img.height;
+
         console.log(width);
         console.log(height);
-        // if (width > maxWidth || height > maxHeight) {
-        //   if (width > height) {
-        //     height *= maxWidth / width;
-        //     width = maxWidth;
-        //   } else {
-        //     width *= maxHeight / height;
-        //     height = maxHeight;
-        //   }
-        // }
+
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
-        originalData = ctx.getImageData(0, 0, canvas.width, canvas.height).data; // 获取原始图像数据
       };
       img.src = reader.result;
     };
@@ -134,6 +120,7 @@ function updateCompress() {
   compressPercentage.textContent = `${Math.round(compress) / 100}`;
 }
 
+// 格式化图片大小单位
 function formatSizeUnits(bytes) {
   if (bytes >= 1073741824) {
     return (bytes / 1073741824).toFixed(2) + " GB";
