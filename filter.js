@@ -267,7 +267,7 @@ function saveImage() {
 
   // 创建一个链接元素，并设置下载属性
   const link = document.createElement("a");
-  link.download = "watermarked.png";
+  link.download = "filter.png";
   link.href = dataURL;
 
   // 将链接元素添加到文档中，并模拟单击

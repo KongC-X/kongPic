@@ -17,6 +17,14 @@ dropzone.addEventListener("drop", function (e) {
   fileInfo = files;
   // 处理上传文件
   handleFiles(files);
+
+    // 写入图片大小信息
+    let picSize = document.querySelector("table tr:nth-child(2) td:nth-child(2)");
+    picSize.innerHTML = formatSizeUnits(fileInfo[0].size);
+  
+    // 写入图片类型信息
+    let picType = document.querySelector("table tr:nth-child(3) td:nth-child(2)");
+    picType.innerHTML = fileInfo[0].type.split("/")[1].toUpperCase();
 });
 
 // 监听上传按钮点击事件
@@ -26,9 +34,17 @@ uploadBtn.addEventListener("change", function (e) {
   fileInfo = files;
   // 处理上传文件
   handleFiles(files);
-  console.log(fileInfo[0]);
-  console.log(fileInfo[0].size);
-  console.log(fileInfo[0].type);
+
+  console.log(fileInfo[0].size); // 240480
+  console.log(fileInfo[0].type); // image/jpeg
+
+  // 写入图片大小信息
+  let picSize = document.querySelector("table tr:nth-child(2) td:nth-child(2)");
+  picSize.innerHTML = formatSizeUnits(fileInfo[0].size);
+
+  // 写入图片类型信息
+  let picType = document.querySelector("table tr:nth-child(3) td:nth-child(2)");
+  picType.innerHTML = fileInfo[0].type.split("/")[1].toUpperCase();
 });
 
 // 处理上传文件
@@ -51,15 +67,17 @@ function handleFiles(files) {
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
-        let width = img.width;
-        let height = img.height;
+        // 写入图片像素信息
+        const picPixel = document.querySelector("table tr:nth-child(4) td:nth-child(2)");
+        picPixel.innerHTML = `${img.width} x ${img.height} px`;
 
-        console.log(width);
-        console.log(height);
+        // 写入图片宽高
+        document.getElementById("pic-width").value = img.width;
+        document.getElementById("pic-height").value = img.height;
 
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
       };
       img.src = reader.result;
     };
@@ -76,31 +94,78 @@ function handleFiles(files) {
 const selector = document.querySelector(".selector");
 const radios = selector.querySelectorAll('input[type="radio"]');
 
-let selectedValue;
+let selectedValue = "jpeg";
 
-radios.forEach(radio => {
-  radio.addEventListener("change", event => {
+radios.forEach((radio) => {
+  radio.addEventListener("change", (event) => {
     selectedValue = event.target.value;
   });
 });
 
+  // // 创建离屏Canvas
+  // var offscreenCanvas = document.createElement('canvas');
+  // var offscreenCtx = offscreenCanvas.getContext('2d');
+  
+  // let offscreenWidth = canvas.width;
+  // let offscreenHeight = canvas.height;
+
+  // // 将主Canvas上的内容绘制到离屏Canvas上
+  // offscreenCtx.drawImage(canvas, 0, 0);
+
+
+// 获取输入框元素
+const widthInput = document.getElementById("pic-width");
+
+// 添加事件监听器
+widthInput.addEventListener("input", function(event) {
+      // 获取当前输入框的值
+      var value = event.target.value;
+
+      // 打印当前输入框的值
+      console.log(value);
+  
+      // offscreenWidth = value;
+});
+
+
+// 获取输入框元素
+const heightInput = document.getElementById("pic-height");
+
+// 添加事件监听器
+heightInput.addEventListener("input", function(event) {
+      // 获取当前输入框的值
+      var value = event.target.value;
+
+      // 打印当前输入框的值
+      console.log(value);
+  
+      // offscreenHeight = value;
+});
+
 // 保存图片
 function saveImage() {
-  const compress = parseFloat(
-    document.getElementById("compress-slider").value
-  );
+  const compress = parseFloat(document.getElementById("compress-slider").value);
+
+  // // 将离屏Canvas绘制回主Canvas
+  // offscreenCtx.drawImage(offscreenCanvas, 0, 0, offscreenWidth, offscreenHeight);
 
   // 将Canvas转换为base64编码的图像数据URL，指定输出格式为JPEG，第二个参数为压缩质量
   // 像 PNG 格式的图片因为压缩算法的不同，设置压缩质量的参数不一定会生效。压缩后的图片质量会有所降低
   // PNG 格式的图像数据通常比 JPEG 格式的图像数据更大，但在某些情况下可能会提供更好的图像质量。
-  const dataURL = canvas.toDataURL(`image/${selectedValue}`, Math.round(compress) / 100);
+  const dataURL = canvas.toDataURL(
+    `image/${selectedValue}`,
+    Math.round(compress) / 100
+  );
 
-  console.log(`Selected value: ${selectedValue}`);
+  // canvas.toDataURL() 方法返回的数据URL是以 Base64 编码的字符串形式表示的图像数据。
+  // Base64 编码会使图像数据变大约 1.33 倍。
+  // 因此，实际下载的文件大小可能会比数据URL的长度大约 1.33 倍。
   console.log(`压缩后文件大小：${formatSizeUnits(dataURL.length)}`);
+  console.log(canvas.width);
 
   // 创建一个链接元素，并设置下载属性
   const link = document.createElement("a");
-  link.download = `watermarked.${selectedValue}`;
+  link.download = `compress.${selectedValue}`;
   link.href = dataURL;
 
   // 将链接元素添加到文档中，并模拟单击
@@ -113,9 +178,7 @@ function saveImage() {
 
 // 压缩系数百分比显示
 function updateCompress() {
-  const compress = parseFloat(
-    document.getElementById("compress-slider").value
-  );
+  const compress = parseFloat(document.getElementById("compress-slider").value);
   const compressPercentage = document.getElementById("compressPercentage");
   compressPercentage.textContent = `${Math.round(compress) / 100}`;
 }
