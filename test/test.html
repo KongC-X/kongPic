@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <!-- 在HTML中添加一个canvas元素和一个发送到手机的按钮 -->
+    <canvas id="myCanvas"></canvas>
+    <input type="file" id="imageInput" />
+    <button id="sendToMobileButton">发送到手机</button>
+    <canvas id="qrcanvas"></canvas>
+    <div id="qrcode"></div>
+
+    <script src="./qrcode.min.js"></script>
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const qrcanvas = document.getElementById("qrcanvas");
+      const ctx = canvas.getContext("2d");
+      const imageInput = document.getElementById("imageInput");
+
+      // 当用户选择图片后，将其添加到canvas中
+      imageInput.addEventListener("change", () => {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0); // 在canvas中添加图片
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const sendToMobileButton = document.getElementById("sendToMobileButton");
+
+      // 当用户点击发送到手机的按钮时，生成二维码并显示给用户
+      sendToMobileButton.addEventListener("click", () => {
+        const dataUrl = canvas.toDataURL(); // 获取导出的图片的DataURL
+        console.log(dataUrl);
+		const qrcodeContainer = document.getElementById('myCanvas');
+		const qrcode = new QRCode(qrcodeContainer, {
+			text: dataUrl,
+			width: 256,
+			height: 256,
+		  });
+        console.log(qrcode);
+        alert("请使用手机扫描以下二维码以获取导出的图片：");
+      });
+
+      function removeBase64Prefix(base64) {
+        const prefix = "data:image/png;base64,";
+        if (base64.startsWith(prefix)) {
+          return base64.substring(prefix.length);
+        }
+        return base64;
+      }
+    </script>
+  </body>
+</html>

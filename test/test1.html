@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Image to Qiniu Cloud</title>
+</head>
+<body>
+  <input type="file" id="imageInput">
+  <button onclick="uploadImage()">Upload</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qiniu-js/3.4.1/qiniu.min.js"></script>
+    
+  <script>
+    function uploadImage() {
+      var accessKey = 'RN06YKXhiqj2fWrfeZlYFP0OIWQEcgsftbXYweeM';
+      var secretKey = 'twKoTsi2fRyddfVV_w5Ll7-I3LDKteKr9v_4wz4n';
+      var bucketName = 'kongpic';
+
+      var file = document.getElementById('imageInput').files[0];
+      var key = file.name;
+
+      var config = {
+        useCdnDomain: true,
+        region: qiniu.region.z0
+      };
+
+      var putExtra = {
+        fname: key,
+        params: {},
+        mimeType: null
+      };
+
+      var observable = qiniu.upload(file, key, accessKey, secretKey, putExtra, config);
+      var subscription = observable.subscribe({
+        next(res) {
+          // 上传中
+          console.log('Upload progress:', res.total.percent.toFixed(2) + '%');
+        },
+        error(err) {
+          // 上传失败
+          console.error('Failed to upload image:', err);
+        },
+        complete(res) {
+          // 上传完成
+          var image_url = 'http://' + bucketName + '/' + res.key;
+          console.log('Image URL:', image_url);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

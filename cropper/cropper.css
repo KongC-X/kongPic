@@ -4,7 +4,7 @@ body {
   align-items: center;
   height: 100vh;
   /* background: linear-gradient(135deg, #a7cee0 50%, #d0dea7); */
-  background: url(./com-bg.webp) no-repeat;
+  background: url(../img/com-bg.webp) no-repeat;
 }
 
 #main {
@@ -160,55 +160,37 @@ button:active:before {
   visibility: hidden;
 }
 
-.selector {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px
-}
-
-.selector label {
-  margin-right: 10px;
-  padding: 5px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-
-tr:nth-child(1) {
-  font-weight: bold;
-}
-
-.form-group input[type="number"] {
-  display: inline-block;
-  width: 60px;
-  border: none;
-  padding: 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  text-align: center;
-  margin: 2px 20px;
-  border-bottom: solid 2px #898787;
-  transition: border-bottom-color 0.2s ease-in-out;
-  background-color: transparent;
-}
-
-.form-group input[type="number"]:focus {
-  outline: none;
-  border-bottom-color: #007bff;
-}
-
 #dir {
   position: fixed;
   top: 120px;
   left: 100px;
+}
+
+.rotate {
+  display: block;
+  border: 1px solid #ccc;
+  margin: 10px;
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.flip-horizontal {
+  background-image: url('../img/leftRight.png');
+}
+
+.flip-vertical {
+  background-image: url('../img/upDown.png');
+}
+
+.rotate-left {
+  background-image: url('../img/leftRotate.png');
+}
+
+.rotate-right {
+  background-image: url('../img/rightRotate.png');
 }

@@ -162,6 +162,9 @@ function saveImage() {
   // 因此，实际下载的文件大小可能会比数据URL的长度大约 1.33 倍。
   console.log(`压缩后文件大小：${formatSizeUnits(dataURL.length)}`);
   console.log(canvas.width);
+  console.log(dataURL);
+  var binaryData = atob(dataURL);
+  console.log(binaryData);
 
   // 创建一个链接元素，并设置下载属性
   const link = document.createElement("a");

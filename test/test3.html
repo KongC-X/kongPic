@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas Image Cropping Demo</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+			margin: 10px;
+		}
+		.overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: none;
+		}
+		.crop-box {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 200px;
+			height: 200px;
+			margin-top: -100px;
+			margin-left: -100px;
+			border: 2px dashed white;
+			display: none;
+		}
+		.crop-box .handle {
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			background-color: white;
+			border: 2px solid black;
+		}
+		.crop-box .handle.tl {
+			top: -5px;
+			left: -5px;
+			cursor: nwse-resize;
+		}
+		.crop-box .handle.tr {
+			top: -5px;
+			right: -5px;
+			cursor: nesw-resize;
+		}
+		.crop-box .handle.bl {
+			bottom: -5px;
+			left: -5px;
+			cursor: nesw-resize;
+		}
+		.crop-box .handle.br {
+			bottom: -5px;
+			right: -5px;
+			cursor: nwse-resize;
+		}
+	</style>
+</head>
+<body>
+	<h1>Canvas Image Cropping Demo</h1>
+	<p>请上传一张图片：</p>
+	<input type="file" id="imageLoader" name="imageLoader"/>
+	<br><br>
+	<canvas id="imageCanvas"></canvas>
+	<div class="overlay"></div>
+	<div class="crop-box">
+		<div class="handle tl"></div>
+		<div class="handle tr"></div>
+		<div class="handle bl"></div>
+		<div class="handle br"></div>
+	</div>
+
+	<script>
+		var canvas = document.getElementById('imageCanvas');
+		var ctx = canvas.getContext('2d');
+		var imageLoader = document.getElementById('imageLoader');
+		var cropBox = document.querySelector('.crop-box');
+		var overlay = document.querySelector('.overlay');
+		var handles = document.querySelectorAll('.handle');
+		
+		imageLoader.addEventListener('change', handleImage, false);
+
+		function handleImage(e) {
+			var reader = new FileReader();
+			reader.onload = function(event) {
+				var imageObj = new Image();
+				imageObj.src = event.target.result;
+				imageObj.onload = function() {
+					canvas.width = imageObj.width;
+					canvas.height = imageObj.height;
+					ctx.drawImage(imageObj, 0, 0);
+					cropBox.style.display = 'block';
+					overlay.style.display = 'block';
+				};
+			};
+			reader.readAsDataURL(e.target.files[0]);
+		}
+
+		handles.forEach(function(handle) {
+			handle.addEventListener('mousedown', startResize, false);
+		});
+
+		function startResize(e) {
+			e.preventDefault();
+			window.addEventListener('mousemove', resizeCropBox, false);
+			window.addEventListener('mouseup', stopResize, false);
+		}
+
+		function resizeCropBox(e) {
+			var rect = canvas.getBoundingClientRect();
+			var x = e.clientX - rect.left;
+			var y = e.clientY - rect.top;
+
+			cropBox.style.width = x + 'px';
+			cropBox.style.height = y + 'px';
+		}
+
+		function stopResize(e) {
+			window.removeEventListener('mousemove', resizeCropBox, false);
+			window.removeEventListener('mouseup', stopResize, false);
+			
+			var croppedCanvas = document.createElement('canvas');
+			var croppedCtx = croppedCanvas.getContext('2d');
+
+			var startX = parseInt(cropBox.style.left);
+			var startY = parseInt(cropBox.style.top);
+			var cropWidth = parseInt(cropBox.style.width);
+			var cropHeight = parseInt(cropBox.style.height);
+
+			croppedCanvas.width = cropWidth;
+			croppedCanvas.height = cropHeight;
+
+			croppedCtx.drawImage(canvas, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+			var croppedImage = croppedCanvas.toDataURL('image/jpeg');
+			
+			var resultWindow = window.open();
+			resultWindow.document.write('<img src="' + croppedImage + '">');
+			
+			cropBox.style.display = 'none';
+			overlay.style.display = 'none';
+			
+			canvas.width = canvas.width; // 清空画布
+		}
+		
+</script>
+
+</body>
+</html>

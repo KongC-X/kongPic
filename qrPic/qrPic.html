@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>QR Code Replacement</title>
+  </head>
+  <body>
+    <div>
+      <label for="imageFile">Select an image:</label>
+      <input type="file" id="imageFile">
+    </div>
+    <div>
+      <label for="qrCodeFile">Select your QR code:</label>
+      <input type="file" id="qrCodeFile">
+    </div>
+    <div>
+      <button id="replaceQRCode" disabled>Replace QR Code</button>
+    </div>
+    <div>
+      <img id="imagePreview" src="" alt="Image Preview">
+    </div>
+    
+    <!-- 引用jsQR和qrcode.js库的JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    
+    <!-- 引用自己的JavaScript文件 -->
+    <script src="qrPic.js"></script>
+  </body>
+</html>

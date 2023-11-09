@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+</head>
+
+<body>
+    <canvas id="dir" width="800" height="300">
+    </canvas>
+
+    <script>
+        var canvas = document.getElementById("dir");
+        var context = canvas.getContext("2d");
+
+        var gridY = 10,
+            gridX = 10,
+            colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5',
+                '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50',
+                '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800',
+                '#FF5722'
+            ],
+            durVal = 0.1;
+
+
+        // 粒子
+        function Particle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.color = colors[Math.floor(Math.random() * colors.length)]; //'bleack'//
+            this.futurRadius = randomInt(1.1, 5.1);
+            this.radius = 1.1;
+            this.dying = false;
+            this.base = [x, y];
+
+            this.drawParticle = function () {
+
+                // 当前粒子变小到一定程度之后，每次将它的半径+0.1，使其慢慢变大
+                if (this.radius < this.futurRadius && this.dying === false) {
+                    this.radius += durVal;
+                } else { //粒子已经到达最大状态
+                    this.dying = true; //表示粒子还处于show状态
+                }
+
+                //每次-0.1
+                if (this.dying) {
+                    this.radius -= durVal;
+                }
+                // 画粒子形状
+                context.save();
+                context.fillStyle = this.color;
+                context.beginPath();
+                context.fillRect(this.x, this.y, this.futurRadius, this.futurRadius)
+                context.closePath();
+                context.fill();
+                context.restore();
+
+                //将消失的粒子重置最初的状态
+                if (this.y < 0 || this.radius < 1) {
+                    this.x = this.base[0];
+                    this.y = this.base[1];
+                    this.dying = false;
+                    this.futurRadius = randomInt(1.1, 5.1);
+                }
+            }
+        }
+
+        function Shape(x, y, texte) {
+            this.x = x;
+            this.y = y;
+            this.size = 200;
+            this.text = texte;
+            this.placement = [];
+        }
+
+
+        Shape.prototype.getValue = function () {
+            context.textAlign = "center";
+            context.font = this.size + "px arial";
+            context.fillText(this.text, this.x, this.y);
+
+            let idata = context.getImageData(0, 0, canvas.width, canvas.height); // 获取 canvas指定范围内的 像素数组
+            let buffer32 = new Uint32Array(idata.data.buffer); // 转成32位的数组
+
+            // 遍历所有的数组 
+            for (var j = 0; j < canvas.height; j += gridY) {
+                for (var i = 0; i < canvas.width; i += gridX) {
+                    if (buffer32[j * canvas.width + i]) {
+                        // 放入粒子对象
+                        var ball = new Particle(i, j);
+                        this.placement.push(ball);
+                    }
+                }
+            }
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function randomInt(min, max) {
+            return min + Math.random() * (max - min + 1);
+        }
+
+        var word = new Shape(canvas.width / 2, canvas.height / 2, 'KongPic')
+        word.getValue
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (var i = 0; i < word.placement.length; i++) {
+                //调用particle对像的drawParticle方法，开始画布上画
+                word.placement[i].drawParticle();
+            }
+
+        }())
+    </script>
+</body>
+
+</html>

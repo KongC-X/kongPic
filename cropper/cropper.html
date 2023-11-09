@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>kongPic图片处理器</title>
+    <link rel="stylesheet" href="./cropper.css" />
+  </head>
+  <body>
+    <!-- 文字粒子效果 -->
+    <canvas id="dir" width="800" height="300"> </canvas>
+    <div id="main">
+      <div class="canvas-container">
+        <div id="dropzone">
+          <label class="drop-text" for="uploadBtn"
+            >点击文字或拖拽上传图片</label
+          >
+          <input type="file" id="uploadBtn" accept="image/*" multiple />
+        </div>
+        <canvas id="canvas" style="visibility: hidden"></canvas>
+      </div>
+
+      <div class="form-container">
+        <div class="form-title">裁剪</div>
+        <div class="form-group"></div>
+        <div class="form-title">旋转</div>
+        <div class="form-group">
+          <div class="rotate flip-horizontal" id="flipHorizontalBtn" title="左右翻转"></div>
+          <div class="rotate flip-vertical" id="flipVerticalBtn" title="上下翻转"></div>
+          <div class="rotate rotate-left" id="rotateLeftBtn" title="左转"></div>
+          <div class="rotate rotate-right" id="rotateRightBtn" title="右转"></div>
+        </div>
+        <div class="form-group">
+          <button onclick="saveImage()">保存图片</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./cropper.js"></script>
+  </body>
+</html>

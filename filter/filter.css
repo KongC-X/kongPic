@@ -240,7 +240,7 @@ button:active:before {
     align-items: center;
     color: white;
     cursor: pointer;
-    background-image: url('./bg.jpg');
+    background-image: url('../img/bg.jpg');
     background-size: cover;
     background-position: center;
     filter: grayscale(10%);
