@@ -7,6 +7,8 @@ var rotationAngle = 0; // 记录旋转角度
 var flippedHorizontal = false; // 记录是否已经左右翻转
 var flippedVertical = false; // 记录是否已经上下翻转
 
+let cropper; //创建一个cropper的全局对象
+
 // 阻止浏览器默认行为
 dropzone.addEventListener("dragover", function (e) {
   e.preventDefault();
@@ -54,47 +56,16 @@ function handleFiles(files) {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0, img.width, img.height);
 
-        var cropper = new Cropper(canvas, {
-          aspectRatio: 1 / 1, // 裁剪框宽高比
-          viewMode: 2, // 显示模式，0：自由裁剪，1：限制比例裁剪，2：限制裁剪框内图像大小
-          zoomable: false, // 是否允许缩放
-          crop: function(event) {
-            // 裁剪框发生变化时触发
-          }
-        });
-
-        // 左右翻转
-        document.getElementById("flipHorizontalBtn").addEventListener("click", function () {
-          flippedHorizontal = !flippedHorizontal;
-          if (flippedHorizontal) {
-            cropper.scale(-1, 1);
-          } else  {
-            cropper.scale(1, 1);
-          }
-        });
-
-        // 上下翻转
-        document.getElementById("flipVerticalBtn").addEventListener("click", function () {
-          flippedVertical = !flippedVertical;
-          if (flippedVertical) {
-            cropper.scale(1, -1);
-          } else {
-            cropper.scale(1, 1);
-          }
-        });
-
-        // 左转
-        document.getElementById("rotateLeftBtn").addEventListener("click", function () {
-          cropper.rotate(-90);
-        });
-
-        // 右转
-        document.getElementById("rotateRightBtn").addEventListener("click", function () {
-          cropper.rotate(90);
+        cropper = new Cropper(canvas, {
+          aspectRatio: NaN, // 裁剪框宽高比
+          minContainerWidth: 800,   //容器最小的宽度
+          minContainerHeight: 580,  //容器最小的高度
+          // viewMode: 1, // 显示模式，0：自由裁剪，1：限制比例裁剪，2：限制裁剪框内图像大小
+          zoomable: true, // 是否允许缩放
+          preview: document.querySelector("#preview"), //设置我们需要添加实时预览的地方
         });
       };
       img.src = reader.result;
-
     };
 
     reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
@@ -107,26 +78,80 @@ function handleFiles(files) {
   }
 }
 
-// 绘制图片
-// function drawImage(image) {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   ctx.save();
-//   ctx.translate(canvas.width / 2, canvas.height / 2);
-//   ctx.rotate(rotationAngle);
-//   if (flippedHorizontal) {
-//     ctx.scale(-1, 1);
-//   }
-//   if (flippedVertical) {
-//     ctx.scale(1, -1);
-//   }
-//   ctx.drawImage(image, -image.width / 2, -image.height / 2);
-//   ctx.restore();
-// }
+// 左右翻转
+document
+  .getElementById("flipHorizontalBtn")
+  .addEventListener("click", function () {
+    flippedHorizontal = !flippedHorizontal;
+    if (flippedHorizontal) {
+      cropper.scale(-1, 1);
+    } else {
+      cropper.scale(1, 1);
+    }
+  });
+
+// 上下翻转
+document
+  .getElementById("flipVerticalBtn")
+  .addEventListener("click", function () {
+    flippedVertical = !flippedVertical;
+    if (flippedVertical) {
+      cropper.scale(1, -1);
+    } else {
+      cropper.scale(1, 1);
+    }
+  });
+
+// 左转
+document.getElementById("rotateLeftBtn").addEventListener("click", function () {
+  cropper.rotate(-90);
+});
+
+// 右转
+document
+  .getElementById("rotateRightBtn")
+  .addEventListener("click", function () {
+    cropper.rotate(90);
+  });
+
+// 修改裁剪框比例
+const select = document.getElementById("proportion");
+select.addEventListener("change", () => {
+  // 当下拉框选项发生改变时，更新数据显示
+  cropper.setAspectRatio(parseRatio(select.value)); // 注意需要将字符串转数字
+});
+
+// 自定义旋转角度
+const radioSlider = document.getElementById("radio-slider");
+radioSlider.addEventListener('input', function () {
+  cropper.rotateTo(radioSlider.value);
+})
+
+
+// 字符串转换为比例
+function parseRatio(str) {
+  const parts = str.split('/');
+  const numerator = parseFloat(parts[0]);
+  const denominator = parseFloat(parts[1]);
+  
+  if (denominator !== 0) {
+    return numerator / denominator;
+  } else {
+    return null; // 处理除数为0的情况
+  }
+}
+
+// 亮度百分比显示
+function updateRadio() {
+  const radioPercentage = document.getElementById("radioPercentage");
+  radioPercentage.textContent = `${Math.round(radioSlider.value)}`;
+}
 
 // 保存图片
 function saveImage() {
-  // 将画布转换为数据 URL
-  const dataURL = canvas.toDataURL("image/png");
+
+  // 将裁剪画布转换为数据 URL
+  const dataURL = cropper.getCroppedCanvas().toDataURL("image/png");
 
   // 创建一个链接元素，并设置下载属性
   const link = document.createElement("a");

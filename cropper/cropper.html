@@ -3,7 +3,10 @@
   <head>
     <title>kongPic图片处理器</title>
     <link rel="stylesheet" href="./cropper.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css"
+    />
   </head>
   <body>
     <!-- 文字粒子效果 -->
@@ -22,14 +25,42 @@
       <div class="form-container">
         <div class="form-title">裁剪</div>
         <div class="form-group">
+          <label for="proportion">裁剪比例：</label>
+          <select id="proportion">
+            <option value="NaN">自由比例</option>
+            <option value="1/1">1:1</option>
+            <option value="4/3">4:3</option>
+            <option value="3/2">3:2</option>
+            <option value="16/9">16:9</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <span class="previewText">裁剪预览框:</span>
           <div id="preview"></div>
         </div>
         <div class="form-title">旋转</div>
         <div class="form-group">
-          <div class="rotate flip-horizontal" id="flipHorizontalBtn" title="左右翻转"></div>
-          <div class="rotate flip-vertical" id="flipVerticalBtn" title="上下翻转"></div>
+          <div
+            class="rotate flip-horizontal"
+            id="flipHorizontalBtn"
+            title="左右翻转"
+          ></div>
+          <div
+            class="rotate flip-vertical"
+            id="flipVerticalBtn"
+            title="上下翻转"
+          ></div>
           <div class="rotate rotate-left" id="rotateLeftBtn" title="左转"></div>
-          <div class="rotate rotate-right" id="rotateRightBtn" title="右转"></div>
+          <div
+            class="rotate rotate-right"
+            id="rotateRightBtn"
+            title="右转"
+          ></div>
+        </div>
+        <div class="form-group" id="radio">
+          <label for="radio-slider">旋转角度：</label>
+          <input type="range"  min="-180" max="180" value="0" id="radio-slider" oninput="updateRadio()"/>
+          <span id="radioPercentage">0</span>
         </div>
         <div class="form-group">
           <button onclick="saveImage()">保存图片</button>
