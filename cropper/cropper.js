@@ -53,40 +53,48 @@ function handleFiles(files) {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        var cropper = new Cropper(canvas, {
+          aspectRatio: 1 / 1, // 裁剪框宽高比
+          viewMode: 2, // 显示模式，0：自由裁剪，1：限制比例裁剪，2：限制裁剪框内图像大小
+          zoomable: false, // 是否允许缩放
+          crop: function(event) {
+            // 裁剪框发生变化时触发
+          }
+        });
+
+        // 左右翻转
+        document.getElementById("flipHorizontalBtn").addEventListener("click", function () {
+          flippedHorizontal = !flippedHorizontal;
+          if (flippedHorizontal) {
+            cropper.scale(-1, 1);
+          } else  {
+            cropper.scale(1, 1);
+          }
+        });
+
+        // 上下翻转
+        document.getElementById("flipVerticalBtn").addEventListener("click", function () {
+          flippedVertical = !flippedVertical;
+          if (flippedVertical) {
+            cropper.scale(1, -1);
+          } else {
+            cropper.scale(1, 1);
+          }
+        });
+
+        // 左转
+        document.getElementById("rotateLeftBtn").addEventListener("click", function () {
+          cropper.rotate(-90);
+        });
+
+        // 右转
+        document.getElementById("rotateRightBtn").addEventListener("click", function () {
+          cropper.rotate(90);
+        });
       };
       img.src = reader.result;
 
-      // 左右翻转
-      document
-        .getElementById("flipHorizontalBtn")
-        .addEventListener("click", function () {
-          flippedHorizontal = !flippedHorizontal;
-          drawImage(img);
-        });
-
-      // 上下翻转
-      document
-        .getElementById("flipVerticalBtn")
-        .addEventListener("click", function () {
-          flippedVertical = !flippedVertical;
-          drawImage(img);
-        });
-
-      // 左转
-      document
-        .getElementById("rotateLeftBtn")
-        .addEventListener("click", function () {
-          rotationAngle -= Math.PI / 2;
-          drawImage(img);
-        });
-
-      // 右转
-      document
-        .getElementById("rotateRightBtn")
-        .addEventListener("click", function () {
-          rotationAngle += Math.PI / 2;
-          drawImage(img);
-        });
     };
 
     reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
@@ -100,20 +108,20 @@ function handleFiles(files) {
 }
 
 // 绘制图片
-function drawImage(image) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.save();
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.rotate(rotationAngle);
-  if (flippedHorizontal) {
-    ctx.scale(-1, 1);
-  }
-  if (flippedVertical) {
-    ctx.scale(1, -1);
-  }
-  ctx.drawImage(image, -image.width / 2, -image.height / 2);
-  ctx.restore();
-}
+// function drawImage(image) {
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);
+//   ctx.save();
+//   ctx.translate(canvas.width / 2, canvas.height / 2);
+//   ctx.rotate(rotationAngle);
+//   if (flippedHorizontal) {
+//     ctx.scale(-1, 1);
+//   }
+//   if (flippedVertical) {
+//     ctx.scale(1, -1);
+//   }
+//   ctx.drawImage(image, -image.width / 2, -image.height / 2);
+//   ctx.restore();
+// }
 
 // 保存图片
 function saveImage() {

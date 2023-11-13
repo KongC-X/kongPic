@@ -3,6 +3,7 @@
   <head>
     <title>kongPic图片处理器</title>
     <link rel="stylesheet" href="./cropper.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" />
   </head>
   <body>
     <!-- 文字粒子效果 -->
@@ -20,7 +21,9 @@
 
       <div class="form-container">
         <div class="form-title">裁剪</div>
-        <div class="form-group"></div>
+        <div class="form-group">
+          <div id="preview"></div>
+        </div>
         <div class="form-title">旋转</div>
         <div class="form-group">
           <div class="rotate flip-horizontal" id="flipHorizontalBtn" title="左右翻转"></div>
@@ -34,6 +37,7 @@
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
     <script src="./cropper.js"></script>
   </body>
 </html>

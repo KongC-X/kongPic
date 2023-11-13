@@ -194,3 +194,11 @@ button:active:before {
 .rotate-right {
   background-image: url('../img/rightRotate.png');
 }
+
+#preview {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  max-width: 200px;
+  max-height: 200px;
+}

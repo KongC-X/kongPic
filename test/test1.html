@@ -1,51 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Upload Image to Qiniu Cloud</title>
+  <title>Cropper.js示例</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.css" />
+  <style>
+    #preview {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <input type="file" id="imageInput">
-  <button onclick="uploadImage()">Upload</button>
+  <canvas id="myCanvas"></canvas>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qiniu-js/3.4.1/qiniu.min.js"></script>
-    
+  <div id="preview"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
   <script>
-    function uploadImage() {
-      var accessKey = 'RN06YKXhiqj2fWrfeZlYFP0OIWQEcgsftbXYweeM';
-      var secretKey = 'twKoTsi2fRyddfVV_w5Ll7-I3LDKteKr9v_4wz4n';
-      var bucketName = 'kongpic';
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
 
-      var file = document.getElementById('imageInput').files[0];
-      var key = file.name;
+    var img = new Image();
+    img.src = '../img/bg.jpg';
+    img.crossOrigin = 'Anonymous'; // 设置跨域请求
+    img.onload = function() {
+      // 将原始图片绘制到画布上
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
 
-      var config = {
-        useCdnDomain: true,
-        region: qiniu.region.z0
-      };
-
-      var putExtra = {
-        fname: key,
-        params: {},
-        mimeType: null
-      };
-
-      var observable = qiniu.upload(file, key, accessKey, secretKey, putExtra, config);
-      var subscription = observable.subscribe({
-        next(res) {
-          // 上传中
-          console.log('Upload progress:', res.total.percent.toFixed(2) + '%');
-        },
-        error(err) {
-          // 上传失败
-          console.error('Failed to upload image:', err);
-        },
-        complete(res) {
-          // 上传完成
-          var image_url = 'http://' + bucketName + '/' + res.key;
-          console.log('Image URL:', image_url);
+      var cropper = new Cropper(canvas, {
+        aspectRatio: 1 / 1, // 裁剪框宽高比
+        viewMode: 2, // 显示模式，0：自由裁剪，1：限制比例裁剪，2：限制裁剪框内图像大小
+        zoomable: false, // 是否允许缩放
+        crop: function(event) {
+          // 裁剪框发生变化时触发
+          var croppedCanvas = cropper.getCroppedCanvas();
+          var preview = document.getElementById('preview');
+          preview.innerHTML = '';
+          preview.appendChild(croppedCanvas);
         }
       });
-    }
+    };
   </script>
 </body>
 </html>
