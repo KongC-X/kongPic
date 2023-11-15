@@ -66,15 +66,25 @@ radios.forEach((radio) => {
 });
 
 // 设置初始画笔颜色和粗细
-var colorPicker = document.getElementById("colorPicker");
+var colorPicker = document.getElementById("color-picker");
+var colors = colorPicker.getElementsByClassName("color");
 var sizeSlider = document.getElementById("sizeSlider");
-var currentColor = colorPicker.value;
+
+var currentColor = "black"; // 默认是黑色
 var currentSize = sizeSlider.value;
 
-// 监听颜色选择器的变化
-colorPicker.addEventListener("change", function () {
-  currentColor = colorPicker.value;
-});
+// 监听颜色选择事件，用户选择五种固定颜色
+for (var i = 0; i < colors.length; i++) {
+  colors[i].addEventListener("click", function (e) {
+    // 移除之前选中的效果
+    var selectedColor = colorPicker.querySelector(".selected");
+    if (selectedColor) {
+      selectedColor.classList.remove("selected");
+    }
+    currentColor = e.target.style.backgroundColor;
+    e.target.classList.add("selected");
+  });
+}
 
 // 监听粗细滑块的变化
 sizeSlider.addEventListener("input", function () {
@@ -91,22 +101,22 @@ var isEraserMode = false;
 var isMosaicMode = false;
 
 // 监听单选框的变化
-penRadio.addEventListener('change', function() {
+penRadio.addEventListener("change", function () {
   isEraserMode = false;
   isMosaicMode = false;
 });
 
-eraserRadio.addEventListener('change', function() {
+eraserRadio.addEventListener("change", function () {
   isEraserMode = true;
   isMosaicMode = false;
 });
 
-mosaicRadio.addEventListener('change', function() {
+mosaicRadio.addEventListener("change", function () {
   isEraserMode = false;
   isMosaicMode = true;
 });
 
-ctx.globalCompositeOperation = 'source-over';
+ctx.globalCompositeOperation = "source-over";
 
 // 监听鼠标或触摸在Canvas上的绘制事件
 canvas.addEventListener("mousedown", startDrawing);
@@ -135,43 +145,50 @@ function draw(e) {
   var currentX = pos.x;
   var currentY = pos.y;
 
-    // 绘制路径
-    if (!isEraserMode && !isMosaicMode) {
-      // 画笔
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(currentX, currentY);
-      ctx.lineCap = "round";
-      ctx.stroke();
-      ctx.strokeStyle = currentColor;
-      ctx.lineWidth = currentSize;
-      ctx.globalCompositeOperation = 'source-over';
-    } else if (isEraserMode) {
-      // 橡皮擦效果
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(currentX, currentY);
-      ctx.lineCap = "round";
-      ctx.stroke();
-      ctx.strokeStyle = canvas.style.backgroundColor;
-      ctx.lineWidth = currentSize;
-      ctx.globalCompositeOperation = 'destination-out';
-    } else if (isMosaicMode) {
-      // 马赛克效果
-      var mosaicSize = parseInt(currentSize); // 马赛克块的大小
-      var startX = Math.min(lastX, currentX);
-      var startY = Math.min(lastY, currentY);
-      var width = Math.abs(currentX - lastX);
-      var height = Math.abs(currentY - lastY);
-  
-      for (var x = startX; x < startX + width; x += mosaicSize) {
-        for (var y = startY; y < startY + height; y += mosaicSize) {
-          var colorData = ctx.getImageData(x, y, 1, 1).data;
-          ctx.fillStyle = 'rgb(' + colorData[0] + ', ' + colorData[1] + ', ' + colorData[2] + ')';
-          ctx.fillRect(x, y, mosaicSize, mosaicSize);
-        }
+  // 绘制路径
+  if (!isEraserMode && !isMosaicMode) {
+    // 画笔
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(currentX, currentY);
+    ctx.lineCap = "round";
+    ctx.stroke();
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = currentSize;
+    ctx.globalCompositeOperation = "source-over";
+  } else if (isEraserMode) {
+    // 橡皮擦效果
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(currentX, currentY);
+    ctx.lineCap = "round";
+    ctx.stroke();
+    ctx.strokeStyle = canvas.style.backgroundColor;
+    ctx.lineWidth = currentSize;
+    ctx.globalCompositeOperation = "destination-out";
+  } else if (isMosaicMode) {
+    // 马赛克效果
+    var mosaicSize = parseInt(currentSize); // 马赛克块的大小
+    var startX = Math.min(lastX, currentX);
+    var startY = Math.min(lastY, currentY);
+    var width = Math.abs(currentX - lastX);
+    var height = Math.abs(currentY - lastY);
+
+    for (var x = startX; x < startX + width; x += mosaicSize) {
+      for (var y = startY; y < startY + height; y += mosaicSize) {
+        var colorData = ctx.getImageData(x, y, 1, 1).data;
+        ctx.fillStyle =
+          "rgb(" +
+          colorData[0] +
+          ", " +
+          colorData[1] +
+          ", " +
+          colorData[2] +
+          ")";
+        ctx.fillRect(x, y, mosaicSize, mosaicSize);
       }
     }
+  }
 
   lastX = currentX;
   lastY = currentY;
@@ -187,7 +204,7 @@ function getMousePos(canvas, e) {
   var scaleY = canvas.height / rect.height;
   return {
     x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top) * scaleY
+    y: (e.clientY - rect.top) * scaleY,
   };
 }
 

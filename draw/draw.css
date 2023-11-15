@@ -206,3 +206,21 @@ button:active:before {
   width: 50px;
   margin-left: 10px;
 }
+
+#color-picker {
+  display: flex;
+}
+
+.color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.color.selected {
+  border-color: #fff;
+  box-shadow: 0 0 5px #109eef;
+}
