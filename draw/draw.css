@@ -174,7 +174,7 @@ button:active:before {
 }
 
 .form-group input[type="range"] {
-  width: 60%;
+  width: 70%;
 }
 
 .form-group input[type="number"] {
@@ -200,4 +200,9 @@ button:active:before {
   position: fixed;
   top: 120px;
   left: 100px;
+}
+
+#sizePercentage {
+  width: 50px;
+  margin-left: 10px;
 }

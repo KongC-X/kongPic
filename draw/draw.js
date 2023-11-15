@@ -81,6 +81,31 @@ sizeSlider.addEventListener("input", function () {
   currentSize = sizeSlider.value;
 });
 
+var penRadio = document.querySelector('input[value="pen"]');
+var eraserRadio = document.querySelector('input[value="eraser"]');
+var mosaicRadio = document.querySelector('input[value="mosaic"]');
+// var undoButton = document.querySelector('#undo');
+// var redoButton = document.querySelector('#redo');
+// var clearButton = document.querySelector('#clear');
+var isEraserMode = false;
+var isMosaicMode = false;
+
+// 监听单选框的变化
+penRadio.addEventListener('change', function() {
+  isEraserMode = false;
+  isMosaicMode = false;
+});
+
+eraserRadio.addEventListener('change', function() {
+  isEraserMode = true;
+  isMosaicMode = false;
+});
+
+mosaicRadio.addEventListener('change', function() {
+  isEraserMode = false;
+  isMosaicMode = true;
+});
+
 ctx.globalCompositeOperation = 'source-over';
 
 // 监听鼠标或触摸在Canvas上的绘制事件
@@ -110,13 +135,43 @@ function draw(e) {
   var currentX = pos.x;
   var currentY = pos.y;
 
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.lineTo(currentX, currentY);
-  ctx.strokeStyle = currentColor;
-  ctx.lineWidth = currentSize;
-  ctx.lineCap = "round";
-  ctx.stroke();
+    // 绘制路径
+    if (!isEraserMode && !isMosaicMode) {
+      // 画笔
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = currentSize;
+      ctx.globalCompositeOperation = 'source-over';
+    } else if (isEraserMode) {
+      // 橡皮擦效果
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.lineCap = "round";
+      ctx.stroke();
+      ctx.strokeStyle = canvas.style.backgroundColor;
+      ctx.lineWidth = currentSize;
+      ctx.globalCompositeOperation = 'destination-out';
+    } else if (isMosaicMode) {
+      // 马赛克效果
+      var mosaicSize = parseInt(currentSize); // 马赛克块的大小
+      var startX = Math.min(lastX, currentX);
+      var startY = Math.min(lastY, currentY);
+      var width = Math.abs(currentX - lastX);
+      var height = Math.abs(currentY - lastY);
+  
+      for (var x = startX; x < startX + width; x += mosaicSize) {
+        for (var y = startY; y < startY + height; y += mosaicSize) {
+          var colorData = ctx.getImageData(x, y, 1, 1).data;
+          ctx.fillStyle = 'rgb(' + colorData[0] + ', ' + colorData[1] + ', ' + colorData[2] + ')';
+          ctx.fillRect(x, y, mosaicSize, mosaicSize);
+        }
+      }
+    }
 
   lastX = currentX;
   lastY = currentY;
@@ -136,6 +191,11 @@ function getMousePos(canvas, e) {
   };
 }
 
+// 粗细调整显示
+function sizeSliderChange() {
+  const sizeSlider = parseFloat(document.getElementById("sizeSlider").value);
+  document.getElementById("sizePercentage").textContent = `${sizeSlider} px`;
+}
 
 // 保存图片
 function saveImage() {

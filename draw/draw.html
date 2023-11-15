@@ -23,14 +23,14 @@
 
         <div class="form-title">模式选择</div>
         <div class="selector">
-          <input type="radio" id="pen" name="format" value="pen" checked/>
+          <input type="radio" id="pen" name="mode" value="pen" checked/>
           <label for="pen">画笔</label>
 
-          <input type="radio" id="mosaic" name="format" value="mosaic" />
-          <label for="mosaic">马赛克</label>
+          <input type="radio" id="mosaic" name="mode" value="mosaic" />
+          <label for="mosaic">马赛克效果</label>
 
-          <input type="radio" id="eraser" name="format" value="eraser" />
-          <label for="eraser">橡皮擦</label>
+          <input type="radio" id="eraser" name="mode" value="eraser" />
+          <label for="eraser">擦除模式</label>
         </div>
 
         <div class="form-title">粗细调整</div>
@@ -41,8 +41,9 @@
             max="20"
             value="5"
             id="sizeSlider"
+            oninput="sizeSliderChange()"
           />
-          <span id="compressPercentage">5</span>
+          <span id="sizePercentage">5 px</span>
         </div>
 
         <div class="form-title">颜色选择</div>
@@ -57,9 +58,9 @@
 
         <div class="form-title">画布操作</div>
         <div class="form-group">
-          <span>后退</span>
-          <span>前进</span>
-          <span>清除画布</span>
+          <button id="undo">撤销</button>
+          <button id="redo">重做</button>
+          <button id="clear">清除画布</button>
         </div>
 
         <div class="form-group">
