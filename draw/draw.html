@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>kongPic图片处理器</title>
+    <link rel="stylesheet" href="./draw.css" />
+  </head>
+  <body>
+    <!-- 文字粒子效果 -->
+    <canvas id="dir" width="800" height="300">
+    </canvas>
+    <div id="main">
+      <div class="canvas-container">
+        <div id="dropzone">
+          <label class="drop-text" for="uploadBtn"
+            >点击文字或拖拽上传图片</label
+          >
+          <input type="file" id="uploadBtn" accept="image/*" multiple />
+        </div>
+        <canvas id="canvas" style="visibility: hidden"></canvas>
+      </div>
+
+      <div class="form-container">
+
+        <div class="form-title">模式选择</div>
+        <div class="selector">
+          <input type="radio" id="pen" name="format" value="pen" checked/>
+          <label for="pen">画笔</label>
+
+          <input type="radio" id="mosaic" name="format" value="mosaic" />
+          <label for="mosaic">马赛克</label>
+
+          <input type="radio" id="eraser" name="format" value="eraser" />
+          <label for="eraser">橡皮擦</label>
+        </div>
+
+        <div class="form-title">粗细调整</div>
+        <div class="form-group">
+          <input
+            type="range"
+            min="1"
+            max="20"
+            value="5"
+            id="sizeSlider"
+          />
+          <span id="compressPercentage">5</span>
+        </div>
+
+        <div class="form-title">颜色选择</div>
+        <div class="form-group">
+          <input type="color" id="colorPicker">
+          <div>红色</div>
+          <div>黄色</div>
+          <div>蓝色</div>
+          <div>绿色</div>
+          <div>黑色</div>
+        </div>
+
+        <div class="form-title">画布操作</div>
+        <div class="form-group">
+          <span>后退</span>
+          <span>前进</span>
+          <span>清除画布</span>
+        </div>
+
+        <div class="form-group">
+          <button onclick="saveImage()">保存图片</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./draw.js"></script>
+  </body>
+</html>

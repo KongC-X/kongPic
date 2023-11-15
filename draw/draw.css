@@ -1,0 +1,203 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* background: linear-gradient(135deg, #a7cee0 50%, #d0dea7); */
+  background: url(../img/com-bg.webp) no-repeat;
+}
+
+#main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 600px;
+  width: 1200px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+  -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+  border-radius: 18px;
+  -webkit-border-radius: 18px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.canvas-container {
+  position: relative;
+  width: 70%;
+  height: 100%;
+}
+
+#canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.form-container {
+  padding: 20px 20px 0 20px;
+  position: relative;
+  width: 25%;
+  height: 100%;
+  overflow: auto;
+  color: black;
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#compressPercentage {
+  width: 30px;
+  margin-left: 10px;
+}
+
+button {
+  --color: #560bad;
+  font-family: inherit;
+  display: inline-block;
+  width: 100%;
+  height: 2.6em;
+  line-height: 2.5em;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--color);
+  transition: color 0.5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: var(--color);
+}
+
+button:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--color);
+  height: 150px;
+  width: 130%;
+  border-radius: 50%;
+}
+
+button:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+button:before {
+  top: 100%;
+  left: 100%;
+  transition: all 0.7s;
+}
+
+button:hover:before {
+  top: -30px;
+  left: -30px;
+}
+
+button:active:before {
+  background: #3a0ca3;
+  transition: background 0s;
+}
+
+#dropzone {
+  width: 100%;
+  height: 100%;
+  /* border: 2px dashed #ccc; */
+  border-radius: 10px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.drop-text {
+  overflow: hidden;
+  border-right: transparent;
+  white-space: nowrap;
+  animation: typing 1s steps(20, end) forwards;
+  font-size: 1.6rem;
+  cursor: pointer;
+  width: 0;
+  background-image: radial-gradient(circle,
+      rgba(238, 174, 202, 1) 0%,
+      rgba(148, 187, 233, 1) 100%);
+  color: #ffffff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 35%;
+  }
+}
+
+#uploadBtn {
+  visibility: hidden;
+}
+
+.selector {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px
+}
+
+.selector label {
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.form-group input[type="range"] {
+  width: 60%;
+}
+
+.form-group input[type="number"] {
+  display: inline-block;
+  width: 60px;
+  border: none;
+  padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  text-align: center;
+  margin: 2px 20px;
+  border-bottom: solid 2px #898787;
+  transition: border-bottom-color 0.2s ease-in-out;
+  background-color: transparent;
+}
+
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-bottom-color: #007bff;
+}
+
+#dir {
+  position: fixed;
+  top: 120px;
+  left: 100px;
+}
