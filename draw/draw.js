@@ -168,6 +168,7 @@ function draw(e) {
     ctx.globalCompositeOperation = "destination-out";
   } else if (isMosaicMode) {
     // 马赛克效果
+    ctx.globalCompositeOperation = "source-over";
     var mosaicSize = parseInt(currentSize); // 马赛克块的大小
     var startX = Math.min(lastX, currentX);
     var startY = Math.min(lastY, currentY);
