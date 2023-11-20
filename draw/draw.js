@@ -3,6 +3,8 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 var dropzone = document.getElementById("dropzone");
 
+var initialCanvasState;
+
 // 阻止浏览器默认行为
 dropzone.addEventListener("dragover", function (e) {
   e.preventDefault();
@@ -49,6 +51,7 @@ function handleFiles(files) {
         ctx.drawImage(img, 0, 0, img.width, img.height);
       };
       img.src = reader.result;
+      initialCanvasState = img;
     };
     reader.readAsDataURL(file); // 读取文件内容，结果用 data:url 的字符串形式表示
   }
@@ -91,12 +94,15 @@ sizeSlider.addEventListener("input", function () {
   currentSize = sizeSlider.value;
 });
 
+// 存储绘制操作的数组
+const actions = [];
+
+// 存储当前操作的索引
+let currentIndex = -1;
+
 var penRadio = document.querySelector('input[value="pen"]');
 var eraserRadio = document.querySelector('input[value="eraser"]');
 var mosaicRadio = document.querySelector('input[value="mosaic"]');
-// var undoButton = document.querySelector('#undo');
-// var redoButton = document.querySelector('#redo');
-// var clearButton = document.querySelector('#clear');
 var isEraserMode = false;
 var isMosaicMode = false;
 
@@ -135,7 +141,32 @@ function startDrawing(e) {
   var pos = getMousePos(canvas, e);
   lastX = pos.x;
   lastY = pos.y;
-  draw(e);
+  // 创建新的绘制操作对象
+  const action = {
+    type: "draw",
+    startX: lastX,
+    startY: lastY,
+    points: [],
+    color: currentColor,
+    width: currentSize,
+  };
+
+  // 将对象存入数组
+  actions.push(action);
+
+  // 更新当前操作索引
+  currentIndex++;
+
+  // 监听鼠标移动事件
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", stopDraw);
+}
+
+// 停止绘制函数
+function stopDraw() {
+  // 移除鼠标移动和抬起事件监听
+  canvas.removeEventListener("mousemove", draw);
+  canvas.removeEventListener("mouseup", stopDraw);
 }
 
 function draw(e) {
@@ -145,17 +176,32 @@ function draw(e) {
   var currentX = pos.x;
   var currentY = pos.y;
 
+  // 获取当前绘制操作对象
+  const action = actions[currentIndex];
+
   // 绘制路径
   if (!isEraserMode && !isMosaicMode) {
-    // 画笔
+    // 清空画布
+    clearCanvas();
+
+    // 重新绘制已有的绘制操作
+    redrawCanvas();
+
+    ctx.globalCompositeOperation = "source-over";
+    ctx.lineCap = "round";
+
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(currentX, currentY);
-    ctx.lineCap = "round";
+
+    // 设置线条颜色和粗细
+    ctx.strokeStyle = action.color;
+    ctx.lineWidth = action.width;
+
     ctx.stroke();
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = currentSize;
-    ctx.globalCompositeOperation = "source-over";
+
+    // 记录当前点坐标
+    action.points.push({ x: currentX, y: currentY });
   } else if (isEraserMode) {
     // 橡皮擦效果
     ctx.beginPath();
@@ -197,6 +243,73 @@ function draw(e) {
 
 function stopDrawing() {
   isDrawing = false;
+  // 绘制操作结束，移除鼠标移动事件监听
+  canvas.removeEventListener("mousemove", draw);
+}
+
+// 撤销按钮点击事件
+document.getElementById("undo").addEventListener("click", function () {
+  if (currentIndex > 0) {
+    // 更新当前操作索引
+    currentIndex--;
+
+    // 清空画布
+    clearCanvas();
+
+    // 重新绘制已有的绘制操作
+    redrawCanvas();
+  }
+});
+
+// 重做按钮点击事件
+document.getElementById("redo").addEventListener("click", function () {
+  if (currentIndex < actions.length - 1) {
+    // 更新当前操作索引
+    currentIndex++;
+
+    // 清空画布
+    clearCanvas();
+
+    // 重新绘制已有的绘制操作
+    redrawCanvas();
+  }
+});
+
+// 清空按钮点击事件
+document.getElementById("clear").addEventListener("click", function () {
+  // 清空绘制操作数组和当前操作索引
+  actions.length = 0;
+  currentIndex = -1;
+
+  // 清空画布
+  clearCanvas();
+});
+
+// 清空画布并重新绘制初始状态（包括图片）
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.drawImage(initialCanvasState, 0, 0);
+}
+
+// 重新绘制画布函数
+function redrawCanvas() {
+  for (let i = 0; i <= currentIndex; i++) {
+    const action = actions[i];
+
+    ctx.beginPath();
+    ctx.moveTo(action.startX, action.startY);
+
+    for (let j = 0; j < action.points.length; j++) {
+      const point = action.points[j];
+      ctx.lineTo(point.x, point.y);
+    }
+
+    ctx.strokeStyle = action.color;
+    ctx.lineWidth = action.width;
+
+    ctx.stroke();
+  }
 }
 
 function getMousePos(canvas, e) {
