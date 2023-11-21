@@ -101,25 +101,27 @@ const actions = [];
 let currentIndex = -1;
 
 var penRadio = document.querySelector('input[value="pen"]');
-var eraserRadio = document.querySelector('input[value="eraser"]');
 var mosaicRadio = document.querySelector('input[value="mosaic"]');
-var isEraserMode = false;
+var rectangleRadio = document.querySelector('input[value="rectangle"]');
 var isMosaicMode = false;
+var isRectangleMode = false;
 
 // 监听单选框的变化
 penRadio.addEventListener("change", function () {
-  isEraserMode = false;
   isMosaicMode = false;
-});
-
-eraserRadio.addEventListener("change", function () {
-  isEraserMode = true;
-  isMosaicMode = false;
+  isRectangleMode = false;
 });
 
 mosaicRadio.addEventListener("change", function () {
   isEraserMode = false;
   isMosaicMode = true;
+  isRectangleMode = false;
+});
+
+rectangleRadio.addEventListener("change", function () {
+  isEraserMode = false;
+  isRectangleMode = true;
+  isMosaicMode = false;
 });
 
 ctx.globalCompositeOperation = "source-over";
@@ -137,29 +139,56 @@ var lastX = 0;
 var lastY = 0;
 
 function startDrawing(e) {
-  isDrawing = true;
-  var pos = getMousePos(canvas, e);
-  lastX = pos.x;
-  lastY = pos.y;
-  // 创建新的绘制操作对象
-  const action = {
-    type: "draw",
-    startX: lastX,
-    startY: lastY,
-    points: [],
-    color: currentColor,
-    width: currentSize,
-  };
+  if (isRectangleMode) {
+    var pos = getMousePos(canvas, e);
+    lastX = pos.x;
+    lastY = pos.y;
 
-  // 将对象存入数组
-  actions.push(action);
+    // 创建新的绘制操作对象
+    const action = {
+      type: "rectangle",
+      startX: lastX,
+      startY: lastY,
+      endX: lastX,
+      endY: lastY,
+      color: currentColor,
+      width: currentSize,
+    };
 
-  // 更新当前操作索引
-  currentIndex++;
+    // 将对象存入数组
+    actions.push(action);
 
-  // 监听鼠标移动事件
-  canvas.addEventListener("mousemove", draw);
-  canvas.addEventListener("mouseup", stopDraw);
+    // 更新当前操作索引
+    currentIndex++;
+
+    // 监听鼠标移动和抬起事件
+    canvas.addEventListener("mousemove", drawRectangle);
+    canvas.addEventListener("mouseup", stopDrawRectangle);
+  } else {
+    isDrawing = true;
+    var pos = getMousePos(canvas, e);
+    lastX = pos.x;
+    lastY = pos.y;
+    // 创建新的绘制操作对象
+    const action = {
+      type: "draw",
+      startX: lastX,
+      startY: lastY,
+      points: [],
+      color: currentColor,
+      width: currentSize,
+    };
+
+    // 将对象存入数组
+    actions.push(action);
+
+    // 更新当前操作索引
+    currentIndex++;
+
+    // 监听鼠标移动事件
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDraw);
+  }
 }
 
 // 停止绘制函数
@@ -180,7 +209,7 @@ function draw(e) {
   const action = actions[currentIndex];
 
   // 绘制路径
-  if (!isEraserMode && !isMosaicMode) {
+  if (!isMosaicMode) {
     // 清空画布
     clearCanvas();
 
@@ -202,16 +231,6 @@ function draw(e) {
 
     // 记录当前点坐标
     action.points.push({ x: currentX, y: currentY });
-  } else if (isEraserMode) {
-    // 橡皮擦效果
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(currentX, currentY);
-    ctx.lineCap = "round";
-    ctx.stroke();
-    ctx.strokeStyle = canvas.style.backgroundColor;
-    ctx.lineWidth = currentSize;
-    ctx.globalCompositeOperation = "destination-out";
   } else if (isMosaicMode) {
     // 马赛克效果
     ctx.globalCompositeOperation = "source-over";
@@ -239,6 +258,46 @@ function draw(e) {
 
   lastX = currentX;
   lastY = currentY;
+}
+
+// 绘制矩形框函数
+function drawRectangle(e) {
+  // 计算当前点坐标
+  var pos = getMousePos(canvas, e);
+  var currentX = pos.x;
+  var currentY = pos.y;
+
+  // 获取当前绘制操作对象
+  const action = actions[currentIndex];
+
+  // 更新结束点坐标
+  action.endX = currentX;
+  action.endY = currentY;
+
+  // 清空画布
+  clearCanvas();
+
+  // 重新绘制已有的绘制操作
+  redrawCanvas();
+
+  // 在上下文中绘制矩形框
+  ctx.beginPath();
+  ctx.rect(
+    action.startX,
+    action.startY,
+    currentX - action.startX,
+    currentY - action.startY
+  );
+  ctx.strokeStyle = action.color;
+  ctx.lineWidth = action.width;
+  ctx.stroke();
+}
+
+// 停止绘制矩形框函数
+function stopDrawRectangle() {
+  // 移除鼠标移动和抬起事件监听器
+  canvas.removeEventListener("mousemove", drawRectangle);
+  canvas.removeEventListener("mouseup", stopDrawRectangle);
 }
 
 function stopDrawing() {
@@ -297,18 +356,32 @@ function redrawCanvas() {
   for (let i = 0; i <= currentIndex; i++) {
     const action = actions[i];
 
-    ctx.beginPath();
-    ctx.moveTo(action.startX, action.startY);
+    if (action.type === "draw") {
+      // 绘制线段
+      ctx.beginPath();
+      ctx.moveTo(action.startX, action.startY);
 
-    for (let j = 0; j < action.points.length; j++) {
-      const point = action.points[j];
-      ctx.lineTo(point.x, point.y);
+      for (let j = 0; j < action.points.length; j++) {
+        const point = action.points[j];
+        ctx.lineTo(point.x, point.y);
+      }
+
+      ctx.strokeStyle = action.color;
+      ctx.lineWidth = action.width;
+      ctx.stroke();
+    } else if (action.type === "rectangle") {
+      // 绘制矩形框
+      ctx.beginPath();
+      ctx.rect(
+        action.startX,
+        action.startY,
+        action.endX - action.startX,
+        action.endY - action.startY
+      );
+      ctx.strokeStyle = action.color;
+      ctx.lineWidth = action.width;
+      ctx.stroke();
     }
-
-    ctx.strokeStyle = action.color;
-    ctx.lineWidth = action.width;
-
-    ctx.stroke();
   }
 }
 
